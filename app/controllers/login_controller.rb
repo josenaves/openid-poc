@@ -26,19 +26,10 @@ class LoginController < ApplicationController
       redirect_to :action => 'index'
       return
     end
-    if params[:use_sreg]
-      sregreq = OpenID::SReg::Request.new
-      # required fields
-      sregreq.request_fields(['email','nickname'], true)
-      # optional fields
-      sregreq.request_fields(['dob', 'fullname'], false)
-      oidreq.add_extension(sregreq)
-      oidreq.return_to_args['did_sreg'] = 'y'
-    end
 
     return_to = url_for :action => 'complete', :only_path => false
     realm = url_for :action => 'index', :id => nil, :only_path => false
-    #realm = return_to
+
     
     if oidreq.send_redirect?(realm, return_to, params[:immediate])
       redirect_to oidreq.redirect_url(realm, return_to, params[:immediate])
@@ -62,22 +53,7 @@ class LoginController < ApplicationController
         flash[:error] = "Verification failed: #{oidresp.message}"
       end
     when OpenID::Consumer::SUCCESS
-      flash[:success] = ("Verification of #{oidresp.display_identifier}"\
-                         " succeeded.")
-      if params[:did_sreg]
-        sreg_resp = OpenID::SReg::Response.from_success_response(oidresp)
-        sreg_message = "Simple Registration data was requested"
-        if sreg_resp.empty?
-          sreg_message << ", but none was returned."
-        else
-          sreg_message << ". The following data were sent:"
-          sreg_resp.data.each {|k,v|
-            sreg_message << "<br/><b>#{k}</b>: #{v}"
-          }
-        end
-        flash[:sreg_results] = sreg_message
-      end
-
+      flash[:success] = ("Verification of #{oidresp.display_identifier} succeeded.")
 
     when OpenID::Consumer::SETUP_NEEDED
       flash[:alert] = "Immediate request failed - Setup Needed"
