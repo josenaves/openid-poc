@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Rails OpenID (RP)</title>
+<title>Rails OpenID (RP) - LOGADO</title>
 </head>
   <style type="text/css">
       * {
@@ -40,8 +40,7 @@
   </style>
   <body>
     <h1>Autenticacao Rails OpenID</h1>
-  
-   <% if flash[:alert] %>
+    <% if flash[:alert] %>
       <div class='alert'>
        <%= h(flash[:alert]) %>
       </div>
@@ -61,23 +60,8 @@
       <%= flash[:sreg_results] %>
       </div>
     <% end %>
-    <% if flash[:pape_results] %>
-      <div class='alert'>
-      <%= flash[:pape_results] %>
-      </div>
-    <% end %>
-    <div id="verify-form">
-      <form method="get" accept-charset="UTF-8" 
-            action='<%= url_for :action => 'start' %>'>
-        Identifier:
-        <input type="text" class="openid" name="openid_identifier" />
-        <input type="submit" value="Verify" /><br />
-        <input type="checkbox" name="immediate" id="immediate" /><label for="immediate">Use immediate mode</label><br/>
-        <input type="checkbox" name="use_sreg" id="use_sreg" /><label for="use_sreg">Request registration data</label><br/>
-        <input type="checkbox" name="use_pape" id="use_pape" /><label for="use_pape">Request phishing-resistent auth policy (PAPE)</label><br/>
-        <input type="checkbox" name="force_post" id="force_post" /><label for="force_post">Force the transaction to use POST by adding 2K of extra data</label>
-      </form>
-    </div>
-  
+
+	<h2>Logado com sucesso.</h2>
+
   </body>
 </html>

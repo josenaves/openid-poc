@@ -2,6 +2,8 @@ OpenidPoc::Application.routes.draw do
   
   match ':controller(/:action(/:id(.:format)))'
 
+  match 'logado' => 'login#logado'
+  
   resources :users
 
   resources :teams
