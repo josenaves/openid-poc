@@ -6,7 +6,8 @@ require 'openid/store/filesystem'
 
 class LoginController < ApplicationController
     
-  skip_before_filter :authenticate, :only => [:new, :create, :index, :logado, :start, :complete]
+  skip_before_filter :authenticate
+  
   layout nil
   
   def index
@@ -188,7 +189,8 @@ class LoginController < ApplicationController
   
   def destroy
     session[:user_id] = nil
-    redirect_to login_url, :notice => 'Logout'
+    puts "session: #{session}"
+    redirect_to :action => 'index', :notice => 'Logout'
   end
 
   private
