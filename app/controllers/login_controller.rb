@@ -148,6 +148,8 @@ class LoginController < ApplicationController
             session[:user_id] = usuario.id
             
             puts "session: #{session}"
+            redirect_to :controller => 'home', :action => 'index'
+            return
           end
           
           
@@ -182,6 +184,11 @@ class LoginController < ApplicationController
     end
     
     redirect_to :action => 'index'
+  end
+  
+  def destroy
+    session[:user_id] = nil
+    redirect_to login_url, :notice => 'Logout'
   end
 
   private

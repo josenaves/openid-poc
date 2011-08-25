@@ -3,6 +3,7 @@ OpenidPoc::Application.routes.draw do
   match ':controller(/:action(/:id(.:format)))'
 
   match 'logado' => 'login#logado'
+  match 'logout' => 'login#destroy'
   
   resources :users
 
