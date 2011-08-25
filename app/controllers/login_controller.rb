@@ -5,7 +5,7 @@ require 'openid/extensions/sreg'
 require 'openid/store/filesystem'
 
 class LoginController < ApplicationController
-  
+    
   skip_before_filter :authenticate, :only => [:new, :create, :index, :logado, :start, :complete]
   layout nil
   
@@ -81,13 +81,25 @@ class LoginController < ApplicationController
 
     oidresp = consumer.complete(parameters, current_url)
     
+    puts "oidresp: #{oidresp.class}"
+    puts "oidresp: #{oidresp}"
+    
+    puts "message: #{oidresp.message.class()}"
     puts "message: #{oidresp.message}"
+
+    puts "signed_fields: #{oidresp.signed_fields.class}"
     puts "signed_fields: #{oidresp.signed_fields}"
-    #puts "openid.identity: " + oidresp.signed_fields["openid.identity"]
+    
+    puts "oidresp.endpoint.display_identifier = #{oidresp.endpoint.display_identifier}"
+    puts "oidresp.endpoint.to_s = #{oidresp.endpoint.to_s}"
     
     puts "-----------------"
+    puts "oidresp.get_signed : "
     puts oidresp.get_signed "http://specs.openid.net/auth/2.0", "openid.identity"
     puts "-----------------"
+    
+    puts "parameters.class: #{parameters.class}"
+    puts "parameters #{parameters}"
     
     case oidresp.status
     when OpenID::Consumer::FAILURE
@@ -114,7 +126,32 @@ class LoginController < ApplicationController
           
           # pegar o email e o id
           puts "............................ sreg_resp.data['email'] = #{sreg_resp.data['email']}"
-           
+          puts "............................ parameters['openid.identity'] = #{parameters['openid.identity']}"
+          
+          identity = parameters['openid.identity']
+          email = sreg_resp.data['email']
+          
+          # buscar o usuario no banco
+          usuario = User.find_by_openid_identity(identity)
+          puts "usuario #{usuario}"
+          
+          usuario = User.find_by_login(email)
+          puts "usuario #{usuario}"
+          
+          if !usuario
+            puts "Usuario e' nill"
+          else
+            puts "usuario.id #{usuario.id}"
+            usuario.openid_identity = identity
+            usuario.save
+            
+            session[:user_id] = usuario.id
+            
+            puts "session: #{session}"
+          end
+          
+          
+                 
         end
         flash[:sreg_results] = sreg_message
       end
